@@ -19,8 +19,7 @@ __pycache__/
 *.parquet
 *.json
 *.jsonl
-*.json.gz
-
+*.json.gz 
 
 fairness/
 fariness_original/
