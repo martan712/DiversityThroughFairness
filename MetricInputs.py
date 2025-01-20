@@ -64,6 +64,7 @@ _log = logging.getLogger(__name__)
 # Now we will load the topics:
 
 # %%
+print(f'data/trec_2022_{DATA_MODE}_reldocs.jsonl')
 topics = pd.read_json(f'data/trec_2022_{DATA_MODE}_reldocs.jsonl', lines=True)
 topics.head()
 

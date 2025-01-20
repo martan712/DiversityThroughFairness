@@ -19,3 +19,11 @@ __pycache__/
 *.parquet
 *.json
 *.jsonl
+
+
+fairness/
+fariness_original/
+fairness_split/
+fairness_split_modified/
+data/
+indexes/
