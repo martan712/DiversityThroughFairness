@@ -1,60 +1,19 @@
-# Fair TREC 2021 Public Code
+# Does fairness foster diversity
+### By Martan van der Straaten
 
-This code is example implementations of the TREC 2021 metrics.  To make it work,
-you need to put data in `data`, as downloaded from TREC, and the runs in `runs`.
+This repository contains the full codebase used for the Bachelor Thesis of Martan van der Straaten. It is based on a repository provided by TREC, the repository is referenced via Github, and the original licence and README are still available under TREC_2022.md. 
 
-The `environment.yml` file defines a Conda environment that contains all required
-dependencies.  It is **strongly recommended** to use this environment for running
-the metric code.
+## Guide
+This Thesis was built on basis of a jupyter notebook, in this notebook we load all our documents and our queries. The main notebook used in this thesis is "Thesis copy.ipynb".
 
-If you store your runs in `runs` with a `.gz` extension, they will be found by
-the evaluation code to run your own evaluations.
+Under "Additional Notebooks" the notebook called "prepare and reduce memory" notebook describes how we built indexes from the very large json files that were provided by TREC. 
 
-**Note:** The Task 1 metrics are ready to use, but take significant time and
-memory to run. Still finishing the Task 2 metric updates and working on Task 1
-performance improvements.
+In the Library folder you can find any and all code that was written for this Thesis. E.g. reranking algorithms, evaluation metrics and the like.
 
-**Note:** the final metrics use gender data.  See the overview paper for crucial
-notes on the limitations, warnings, and limitations, and ethical considerations
-of this data.
+To then get back to our main notebook, we first load this index and use pyserini with default parameters to get the top 200/500 documents per query. Code for this can be found in Libary/searcher.py. We check this with a basic example to see that this gives sensible results. The code for our various rerankers is also found in the Library folder, with each reranker being in the file corresponding to its name. The code for creating the LDA topic model over a set of documents is provided in Library/lda. Finally the evaluation metrics are in Library/evaluations.
 
-Save the data files from [Fair TREC](https://fair-trec.github.io) into the
-`data` directory before running this code.  You can find all data files at
-<https://data.boisestate.edu/library/Ekstrand/TRECFairRanking/>.
+With all this loaded into the notebook, we run over each query, computing the top 200/500 using BM25 score. We compute the topic information and clustering over each BM25 ranking per query. We then rerank these 200/500 documents using the 3 methods applied in this Thesis. We then obtain the relavancy documents and gender affiliation per document for each of these rerankings, through MetricInputs.py provided by TREC. Now, using the topic information, gender affiliation and the final rankings we compute the TREC score, NDCG and alpha-NDCG for each of our rerankers, per query. The resulting scores, and the gender distribution per query, are written to CSV files for further processing.
 
-## Oracle Runs
+In the process_results notebook we look into these scores and the distribution. We visualise some results and compare methods.
 
-The `oracle-runs.py` file generates oracle runs from the training queries, with
-a specified precision.  For example, to generate runs for Task 2 with precision
-0.9, run:
-
-    python .\oracle-runs.py -p 0.9 --task2 -o runs/task2-prec09.tsv
-
-These are useful for seeing the output format, and for testing metrics.
-
-## Metrics and Evaluation
-
-The metrics are defined in modules under `wptrec`.  They require alignment data that
-is computed by the following scripts and stored in `data/metric-tables`:
-
-- `PageAlignments.py` computes the per-page alignments and saves them to disk
-- `Task1Alignment.py` uses the page alignments, qrels, and background distributions
-  to compute Task 1 target distributions.
-- `Task2Alignment.py` does the same thing for Task 2.
-
-Each of these scripts is paired with a Jupyter notebook with nicely-rendered outputs
-and explanations (the Python file is actually the Jupytext plain-text version). We
-recommend the notebook for editing, but the Python script can be run directly to
-produce the outputs.
-
-The Evaluation notebooks use this alignment data to evaluate runs.
-
-All task-specific notebooks have a `DATA_MODE` constant that controls whether they
-work on the training data or the eval data.
-
-You can download precomputed metric tables for the training data from the `metric-tables` 
-folder in <https://drive.google.com/drive/folders/1kjw0HgRor2aEupYyie5orB7t_22khTeD>.
-
-## License
-
-All code is licensed under the MIT License.
+In the statistical analysis notebook we compare two methods using a paired t_test.
